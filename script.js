@@ -126,13 +126,16 @@ function forwardChecking(board) {
         if (!Object.hasOwn(domain, cell)) continue;
 
         let [r, c] = cell.split(",").map(Number)
-        let r = Number(pos[0])
-        let c = Number(pos[1])
+
+        if (board[r][c] == "." && domain[cell].length == 0) {
+            return false
+        }
 
     }
 
     return true
 }
+
 
 function allCandidates() {
     return ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
