@@ -125,14 +125,9 @@ function forwardChecking(board) {
     for (const cell in domain) {
         if (!Object.hasOwn(domain, cell)) continue;
 
-        let pos = cell.split(",")
+        let [r, c] = cell.split(",").map(Number)
         let r = Number(pos[0])
         let c = Number(pos[1])
-
-
-        if (board[r][c] == "." && domain[cell].length == 0) {
-            return false
-        }
 
     }
 
@@ -179,9 +174,7 @@ function solveSodoku(board) {
     }
 
     let bestCellCandidates = domain[bestCell]
-    let pos = bestCell.split(",")
-    let r = Number(pos[0])
-    let c = Number(pos[1])
+    let [r, c] = bestCell.split(",").map(Number)
 
     for (let i = 0; i < bestCellCandidates.length; i++) {
         board[r][c] = bestCellCandidates[i]
