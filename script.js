@@ -94,7 +94,7 @@ function computeDomain(board) {
     for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 9; j++) {
             const candidates = getCandidatesForCell(board, i, j)
-            domain[i + "," +j] = candidates
+            domain[i + "," + j] = candidates
         }
     }
 
@@ -107,13 +107,13 @@ function findBestCell(domain) {
     for (const cell in domain) {
         if (!Object.hasOwn(domain, cell)) continue;
 
-        if(domain[cell].length == 0) continue
+        if (domain[cell].length == 0) continue
 
         if (candidates > domain[cell].length) {
             candidates = domain[cell].length
             key = cell
         }
-        
+
     }
 
     return key
@@ -125,10 +125,7 @@ function forwardChecking(board) {
     for (const cell in domain) {
         if (!Object.hasOwn(domain, cell)) continue;
 
-        let pos = cell.split(",")
-        let r = Number(pos[0])
-        let c = Number(pos[1])
-
+        let [r, c] = cell.split(",").map(Number)
 
         if (board[r][c] == "." && domain[cell].length == 0) {
             return false
@@ -139,12 +136,63 @@ function forwardChecking(board) {
     return true
 }
 
+function count(array, value) {
+    let ans = 0
+    array.forEach(element => {
+        if(element == value) ans++
+    });
+    return ans
+}
+
+function areDuplicatesInArray(array) {
+
+    if (array.length == 0) return false
+
+    let count = {}
+
+    for (let i = 0; i < array.length; i++) {
+        if (!count[array[i]]) {
+            count[array[i]] = 0;
+        }
+        count[array[i]] = count[array[i]] + 1
+    }
+
+    return Math.max(...Object.values(count)) != 1
+}
+
+function isValidSudoku(board) {
+    for (let i = 0; i < 9; i++) {
+        let row = getRow(board, i)
+        let col = getColumn(board, i)
+        if (areDuplicatesInArray(row) || areDuplicatesInArray(col)) {
+            return false
+        }
+    }
+
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++){
+            let box = getBox(board, i, j)
+            if (areDuplicatesInArray(box)) {
+                return false
+            }
+        }
+    }
+
+    return true
+}
+
+
 function allCandidates() {
     return ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 }
 
 
 function solveSodoku(board) {
+
+
+    if (!isValidSudoku(board)) {
+        return false
+    }
 
     if (!forwardChecking(board)) {
         return false;
@@ -161,7 +209,7 @@ function solveSodoku(board) {
         positions.push([r, c])
 
         board[r][c] = domain[bestCell][0]
-        
+
         domain = computeDomain(board)
         bestCell = findBestCell(domain)
     }
@@ -179,9 +227,7 @@ function solveSodoku(board) {
     }
 
     let bestCellCandidates = domain[bestCell]
-    let pos = bestCell.split(",")
-    let r = Number(pos[0])
-    let c = Number(pos[1])
+    let [r, c] = bestCell.split(",").map(Number)
 
     for (let i = 0; i < bestCellCandidates.length; i++) {
         board[r][c] = bestCellCandidates[i]

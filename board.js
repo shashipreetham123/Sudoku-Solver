@@ -38,10 +38,10 @@ function solveButton() {
     for (let n = 0; n < cells.length; n++) {
         let i = parseInt(cells[n].dataset.x);
         let j = parseInt(cells[n].dataset.y);
-        if (cells[n].innerHTML == "" || cells[n].innerHTML == null) {
+        if (cells[n].textContent == "" || cells[n].textContent == null) {
             input_board[j][i] = ".";
         } else {
-            input_board[j][i] = cells[n].innerHTML;
+            input_board[j][i] = cells[n].textContent;
         }
         input_board_cells[j][i] = cells[n];
     }
@@ -52,7 +52,7 @@ function solveButton() {
     if (solved) {
         for (let i = 0; i < 9; i++) {
             for (let j = 0; j < 9; j++) {
-                input_board_cells[i][j].innerHTML = input_board[i][j];
+                input_board_cells[i][j].textContent = input_board[i][j];
             }
         }
     } else {
