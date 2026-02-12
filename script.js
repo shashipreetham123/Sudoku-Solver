@@ -241,5 +241,5 @@ function solveSodoku(board) {
         let [r, c] = positions[i]
         board[r][c] = "."
     }
-
+    return false
 }

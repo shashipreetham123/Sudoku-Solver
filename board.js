@@ -20,6 +20,10 @@ function createBoard() {
             cell.style.borderBottomWidth = "2px"
         }
 
+        cell.addEventListener('input', function (e) {
+            cell.textContent = cell.textContent.replace(/[^1-9]/g, '').slice(0, 1);
+        });
+
 
         x = x + 1;
         if (x == 9) {
@@ -60,6 +64,13 @@ function solveButton() {
     }
 
     
+}
+
+function clearButton() {
+    const cells = boardElement.querySelectorAll(".cell");
+    cells.forEach(cell => {
+        cell.textContent = ""
+    })
 }
 
 createBoard()
