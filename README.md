@@ -1,1 +1,1 @@
-<a href="https://shashipreetham123.github.io/A-Star-Path-Finder/">Link</a>
+<a href="https://shashipreetham123.github.io/Sudoku-Solver/">Link</a>
