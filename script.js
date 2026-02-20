@@ -1,15 +1,3 @@
-// let board = [
-//     [".", ".", ".", ".", "5", "9", ".", ".", "."],
-//     [".", "9", ".", "7", "6", ".", ".", ".", "4"],
-//     [".", "7", "8", ".", ".", ".", ".", "9", "."],
-//     ["1", ".", ".", ".", "9", "6", ".", ".", "."],
-//     ["9", "4", ".", ".", ".", ".", ".", "2", "8"],
-//     [".", ".", ".", "4", "8", ".", ".", ".", "9"],
-//     [".", "2", ".", ".", ".", ".", "8", "7", "."],
-//     ["5", ".", ".", ".", "2", "7", ".", "6", "."],
-//     [".", ".", ".", "6", "4", ".", ".", ".", "."],
-// ]
-
 function getColumn(board, j) {
     let col = []
     for (let i = 0; i < board.length; i++) {
@@ -185,9 +173,21 @@ function isValidSudoku(board) {
 function allCandidates() {
     return ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 }
+function getDomainOfBox(board, bi, bj) {
+    let box = getBox(board, bi, bj)
+
+    let all = allCandidates()
+
+    let domain = all.filter(x => !(box.includes(x)))
+
+    return domain
 
 
-function solveSodoku(board) {
+}
+
+
+
+function solveSodoku(board, queue) {
 
 
     if (!isValidSudoku(board)) {
@@ -209,15 +209,64 @@ function solveSodoku(board) {
         positions.push([r, c])
 
         board[r][c] = domain[bestCell][0]
+        queue.push({
+            r, c,
+            "value": board[r][c],
+        })
 
         domain = computeDomain(board)
         bestCell = findBestCell(domain)
+    }
+
+    for (let bi = 0; bi < 3; bi++) {
+
+        for (let bj = 0; bj < 3; bj++) {
+
+            let boxDomain = getDomainOfBox(board, bi, bj)
+
+            let valToCells = {}
+
+            for (let i = bi * 3; i < (bi + 1) * 3; i++) {
+
+                for (let j = bj * 3; j < (bj + 1) * 3; j++) {
+
+                    if (board[i][j] != ".") continue
+                    const candidates = getCandidatesForCell(board, i, j)
+                    for (const val of boxDomain) {
+                        if (candidates.includes(val)) {
+                            if (!valToCells[val]) {
+                                valToCells[val] = []
+                            }
+                            valToCells[val].push([i, j])
+
+                        }
+                    }
+                }
+            }
+            for (const val in valToCells) {
+                if (valToCells[val].length == 1) {
+                    let [r, c] = valToCells[val][0]
+
+                    board[r][c] = val
+                    positions.push([r, c])
+                    queue.push({
+                        r, c,
+                        "value": val
+                    })
+                }
+            }
+        }
     }
 
     if (!forwardChecking(board)) {
         for (let i = 0; i < positions.length; i++) {
             let [r, c] = positions[i]
             board[r][c] = "."
+            queue.push({
+                r, c,
+                "value": board[r][c],
+            })
+
         }
         return false
     }
@@ -231,15 +280,29 @@ function solveSodoku(board) {
 
     for (let i = 0; i < bestCellCandidates.length; i++) {
         board[r][c] = bestCellCandidates[i]
-        if (solveSodoku(board)) {
+        queue.push({
+            r, c,
+            "value": board[r][c],
+        })
+        if (solveSodoku(board, queue)) {
             return true
         }
         board[r][c] = "."
+        queue.push({
+            r, c,
+            "value": board[r][c],
+        })
+
     }
 
     for (let i = 0; i < positions.length; i++) {
         let [r, c] = positions[i]
         board[r][c] = "."
+        queue.push({
+            r, c,
+            "value": board[r][c],
+        })
+
     }
     return false
 }

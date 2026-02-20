@@ -51,19 +51,37 @@ function solveButton() {
     }
 
 
-    const solved = solveSodoku(input_board);
+    let queue = []
 
-    if (solved) {
-        for (let i = 0; i < 9; i++) {
-            for (let j = 0; j < 9; j++) {
-                input_board_cells[i][j].textContent = input_board[i][j];
-            }
-        }
-    } else {
+    const solved = solveSodoku(input_board, queue);
+
+    if (!solved) {
         alert("The Sudoku doesn't have any solution")
+    } else {
+        assignValues(input_board_cells, queue)
+    }
+    
+}
+
+function assignValues(cellElements, queue, interval = 25) {
+
+    if (queue.length == 0) {
+        return;
     }
 
-    
+    let task = queue.shift()
+
+    if (task.value == ".") {
+        cellElements[task.r][task.c].textContent = ""
+    } else {
+        cellElements[task.r][task.c].textContent = task.value
+    }
+
+    setTimeout(() => {
+        assignValues(cellElements, queue)
+    }, interval);
+
+
 }
 
 function clearButton() {
