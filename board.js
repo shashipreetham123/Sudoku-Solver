@@ -1,5 +1,5 @@
 const boardElement = document.querySelector(".board");
-
+let cancelled = true
 function createBoard() {
     let x = 0;
     let y = 0;
@@ -34,6 +34,7 @@ function createBoard() {
 }
 
 function solveButton() {
+    cancelled = false
     let input_board = Array.from({ length: 9 }, () => Array(9).fill(null));
     let input_board_cells = Array.from({ length: 9 }, () => Array(9).fill(null));
 
@@ -53,17 +54,21 @@ function solveButton() {
 
     let queue = []
 
-    const solved = solveSodoku(input_board, queue);
+    const solved = solveSudoku(input_board, queue);
 
     if (!solved) {
         alert("The Sudoku doesn't have any solution")
     } else {
         assignValues(input_board_cells, queue)
     }
-    
+        
 }
 
 function assignValues(cellElements, queue, interval = 25) {
+
+    if (cancelled) {
+        return
+    }
 
     if (queue.length == 0) {
         return;
@@ -80,11 +85,10 @@ function assignValues(cellElements, queue, interval = 25) {
     setTimeout(() => {
         assignValues(cellElements, queue)
     }, interval);
-
-
 }
 
 function clearButton() {
+    cancelled = true
     const cells = boardElement.querySelectorAll(".cell");
     cells.forEach(cell => {
         cell.textContent = ""

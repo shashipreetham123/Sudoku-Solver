@@ -185,11 +185,7 @@ function getDomainOfBox(board, bi, bj) {
 
 }
 
-
-
-function solveSodoku(board, queue) {
-
-
+function solveSudoku(board, queue) {
     if (!isValidSudoku(board)) {
         return false
     }
@@ -209,10 +205,6 @@ function solveSodoku(board, queue) {
         positions.push([r, c])
 
         board[r][c] = domain[bestCell][0]
-        queue.push({
-            r, c,
-            "value": board[r][c],
-        })
 
         domain = computeDomain(board)
         bestCell = findBestCell(domain)
@@ -249,29 +241,28 @@ function solveSodoku(board, queue) {
 
                     board[r][c] = val
                     positions.push([r, c])
-                    queue.push({
-                        r, c,
-                        "value": val
-                    })
                 }
             }
         }
     }
-
+    
     if (!forwardChecking(board)) {
         for (let i = 0; i < positions.length; i++) {
             let [r, c] = positions[i]
             board[r][c] = "."
-            queue.push({
-                r, c,
-                "value": board[r][c],
-            })
-
         }
         return false
     }
 
     if (bestCell == undefined) {
+        for (let i = 0; i < positions.length; i++) {
+            let [r, c] = positions[i]
+            queue.push({
+                r, c,
+                "value": board[r][c],
+            })
+        }
+
         return true;
     }
 
@@ -280,29 +271,27 @@ function solveSodoku(board, queue) {
 
     for (let i = 0; i < bestCellCandidates.length; i++) {
         board[r][c] = bestCellCandidates[i]
-        queue.push({
-            r, c,
-            "value": board[r][c],
-        })
         if (solveSodoku(board, queue)) {
+            queue.push({
+                r, c,
+                "value": board[r][c]
+            })
+            for (let i = 0; i < positions.length; i++) {
+                let [r, c] = positions[i]
+                queue.push({
+                    r, c,
+                    "value": board[r][c],
+                })
+            }
+            
             return true
         }
         board[r][c] = "."
-        queue.push({
-            r, c,
-            "value": board[r][c],
-        })
-
     }
 
     for (let i = 0; i < positions.length; i++) {
         let [r, c] = positions[i]
         board[r][c] = "."
-        queue.push({
-            r, c,
-            "value": board[r][c],
-        })
-
     }
     return false
 }
