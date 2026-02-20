@@ -74,7 +74,7 @@ function assignValues(cellElements, queue, interval = 25) {
         return;
     }
 
-    let task = queue.shift()
+    let task = queue.pop()
 
     if (task.value == ".") {
         cellElements[task.r][task.c].textContent = ""
