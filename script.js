@@ -271,7 +271,7 @@ function solveSudoku(board, queue) {
 
     for (let i = 0; i < bestCellCandidates.length; i++) {
         board[r][c] = bestCellCandidates[i]
-        if (solveSodoku(board, queue)) {
+        if (solveSudoku(board, queue)) {
             queue.push({
                 r, c,
                 "value": board[r][c]
